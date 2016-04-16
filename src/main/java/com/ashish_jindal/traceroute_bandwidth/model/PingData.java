@@ -25,6 +25,8 @@ public class PingData {
 	private int icmpSeq;
 	private Double rtt;
 	
+	public PingData() {}
+	
 	public PingData(int ping_id, int icmpSeq, Double rtt) {
 		super();
 		this.ping_id = ping_id;

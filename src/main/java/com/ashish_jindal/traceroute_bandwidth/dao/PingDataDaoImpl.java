@@ -3,7 +3,9 @@
  */
 package com.ashish_jindal.traceroute_bandwidth.dao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -40,7 +42,7 @@ public class PingDataDaoImpl implements PingDataDao {
 	@Override
 	public List<PingData> findDataById(int ping_id) {
 		Session session = this.sessionFactory.getCurrentSession();
-        List<PingData> pings = session.createQuery("from PingData WHERE ping_id='" + ping_id + "'").list();
+        List<PingData> pings = session.createQuery("FROM PingData WHERE ping_id='" + ping_id + "'").list();
         return pings;
 	}
 
@@ -53,5 +55,16 @@ public class PingDataDaoImpl implements PingDataDao {
         }
         
         logger.info("Ping deleted successfully, Ping details="+p);		
+	}
+
+	@Override
+	public List<Integer> getAllPings() {
+		Session session = this.sessionFactory.getCurrentSession();
+        List<Integer> pings = session.createQuery("SELECT p.ping_id from PingData p").list();
+        Set<Integer> hs = new HashSet<>();
+        hs.addAll(pings);
+        pings.clear();
+        pings.addAll(hs);
+        return pings;
 	}
 }

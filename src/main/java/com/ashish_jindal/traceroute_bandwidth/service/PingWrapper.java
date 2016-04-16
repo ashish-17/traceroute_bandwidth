@@ -19,7 +19,7 @@ public class PingWrapper {
 	private String address;
 	private int echoRequests = 10;
 	private int packetSize = 32;
-	private int interval = 1;
+	private Double interval = 1.0;
 
 	private List<PingData> output;
 	
@@ -29,7 +29,7 @@ public class PingWrapper {
 		this.output = new ArrayList<>();
 	}
 
-	public PingWrapper(String address, int echoRequests, int packetSize, int interval) {
+	public PingWrapper(String address, int echoRequests, int packetSize, Double interval) {
 		super();
 		this.address = address;
 		this.echoRequests = echoRequests;
@@ -82,14 +82,14 @@ public class PingWrapper {
 	/**
 	 * @return the interval
 	 */
-	public int getInterval() {
+	public Double getInterval() {
 		return interval;
 	}
 
 	/**
 	 * @param interval the interval to set
 	 */
-	public void setInterval(int interval) {
+	public void setInterval(Double interval) {
 		this.interval = interval;
 	}
 
@@ -112,7 +112,7 @@ public class PingWrapper {
 	 */
 	public static void main(String args[]) {
 		try {
-			PingWrapper pw = new PingWrapper("google.com");
+			PingWrapper pw = new PingWrapper("google.com", 10, 32, .5);
 
 			pw.execute();
 
@@ -128,12 +128,14 @@ public class PingWrapper {
 	 */
 	public void execute() {
 		try {
-			String cmd = EXECUTABLE + " " + address + " -c " + echoRequests + " -s " + packetSize + " -i " + interval;
+			String pingCmd = EXECUTABLE + " " + address + " -c " + echoRequests + " -s " + packetSize + " -i " + interval;
+			String[] cmd = {"/bin/bash","-c", "echo ashish17| sudo -S " + pingCmd};
 			
 			Process p = Runtime.getRuntime().exec(cmd);
-
 			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			parsePingOutput(in);
+			in.close();
+			p.destroy();
 		} catch (Exception e) {
 			System.out.println("Error running ping");
 			System.out.println(e);

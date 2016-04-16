@@ -37,13 +37,13 @@ public class PerformAnalysisController {
 	private static int count = 0;
 	
 	@RequestMapping(value={"{address}/{echoRequests}/{packetSize}/{interval}"}, method = RequestMethod.GET)
-	public @ResponseBody PingResponse performPing(
+	public @ResponseBody List<PingData> performPing(
 			@PathVariable String address, 
 			@PathVariable int echoRequests,
 			@PathVariable int packetSize,
 			@PathVariable int interval) {
 		
-		PingWrapper pw = new PingWrapper(address, echoRequests, packetSize, interval);
+		PingWrapper pw = new PingWrapper(address, echoRequests, packetSize, (double)interval / 1000);
 		pw.execute();
 		
 		List<PingWrapper.PingData> pingOutput = pw.getOutput();
@@ -52,30 +52,20 @@ public class PerformAnalysisController {
 		}
 		
 		count++;
-		return new PingResponse(pingOutput);
+		List<PingData> pingData = pingDataDao.findDataById(count-1);
+		return pingData;
 	}
-	
-	public static class PingResponse {
-		private List<PingWrapper.PingData> pingOutput;
 
-		public PingResponse(List<com.ashish_jindal.traceroute_bandwidth.service.PingWrapper.PingData> pingOutput) {
-			super();
-			this.pingOutput = pingOutput;
-		}
+	@RequestMapping(value={"getPings"}, method = RequestMethod.GET)
+	public @ResponseBody List<Integer> getPings () {
+		List<Integer> pings = pingDataDao.getAllPings();
 
-		/**
-		 * @return the pingOutput
-		 */
-		public List<PingWrapper.PingData> getPingOutput() {
-			return pingOutput;
-		}
+		return pings;
+	}
 
-		/**
-		 * @param pingOutput the pingOutput to set
-		 */
-		public void setPingOutput(List<PingWrapper.PingData> pingOutput) {
-			this.pingOutput = pingOutput;
-		}
-		
+	@RequestMapping(value={"getPingData/{ping_id}"}, method = RequestMethod.GET)
+	public @ResponseBody List<PingData> getPingData(@PathVariable int ping_id) {
+		List<PingData> pingData = pingDataDao.findDataById(ping_id);
+		return pingData;
 	}
 }
