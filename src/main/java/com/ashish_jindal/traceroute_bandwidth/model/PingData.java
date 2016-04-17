@@ -21,13 +21,13 @@ public class PingData {
     @GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
-	private int ping_id;
+	private String ping_id;
 	private int icmpSeq;
 	private Double rtt;
 	
 	public PingData() {}
 	
-	public PingData(int ping_id, int icmpSeq, Double rtt) {
+	public PingData(String ping_id, int icmpSeq, Double rtt) {
 		super();
 		this.ping_id = ping_id;
 		this.icmpSeq = icmpSeq;
@@ -48,13 +48,13 @@ public class PingData {
 	/**
 	 * @return the ping_id
 	 */
-	public int getPing_id() {
+	public String getPing_id() {
 		return ping_id;
 	}
 	/**
 	 * @param ping_id the ping_id to set
 	 */
-	public void setPing_id(int ping_id) {
+	public void setPing_id(String ping_id) {
 		this.ping_id = ping_id;
 	}
 	/**

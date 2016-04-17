@@ -40,7 +40,7 @@ public class PingDataDaoImpl implements PingDataDao {
 	}
 
 	@Override
-	public List<PingData> findDataById(int ping_id) {
+	public List<PingData> findDataById(String ping_id) {
 		Session session = this.sessionFactory.getCurrentSession();
         List<PingData> pings = session.createQuery("FROM PingData WHERE ping_id='" + ping_id + "'").list();
         return pings;
@@ -58,10 +58,10 @@ public class PingDataDaoImpl implements PingDataDao {
 	}
 
 	@Override
-	public List<Integer> getAllPings() {
+	public List<String> getAllPings() {
 		Session session = this.sessionFactory.getCurrentSession();
-        List<Integer> pings = session.createQuery("SELECT p.ping_id from PingData p").list();
-        Set<Integer> hs = new HashSet<>();
+        List<String> pings = session.createQuery("SELECT p.ping_id from PingData p").list();
+        Set<String> hs = new HashSet<>();
         hs.addAll(pings);
         pings.clear();
         pings.addAll(hs);

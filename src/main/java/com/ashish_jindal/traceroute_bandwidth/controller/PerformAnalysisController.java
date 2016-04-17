@@ -3,6 +3,7 @@
  */
 package com.ashish_jindal.traceroute_bandwidth.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,9 @@ public class PerformAnalysisController {
 		return "analysis";
 	}
 	
-	private static int count = 0;
-	
-	@RequestMapping(value={"{address}/{echoRequests}/{packetSize}/{interval}"}, method = RequestMethod.GET)
+	@RequestMapping(value={"{ping_id}/{address}/{echoRequests}/{packetSize}/{interval}"}, method = RequestMethod.GET)
 	public @ResponseBody List<PingData> performPing(
+			@PathVariable String ping_id, 
 			@PathVariable String address, 
 			@PathVariable int echoRequests,
 			@PathVariable int packetSize,
@@ -46,25 +46,28 @@ public class PerformAnalysisController {
 		PingWrapper pw = new PingWrapper(address, echoRequests, packetSize, (double)interval / 1000);
 		pw.execute();
 		
-		List<PingWrapper.PingData> pingOutput = pw.getOutput();
-		for (PingWrapper.PingData data : pingOutput) {
-			pingDataDao.addData(new PingData(count, data.getIcmpSeq(), data.getRtt()));
+		List<PingData> pingData = new ArrayList<PingData>();
+		if (pingDataDao.findDataById(ping_id).size() == 0) {
+			List<PingWrapper.PingData> pingOutput = pw.getOutput();
+			for (PingWrapper.PingData data : pingOutput) {
+				pingDataDao.addData(new PingData(ping_id, data.getIcmpSeq(), data.getRtt()));
+			}
+			
+			pingData = pingDataDao.findDataById(ping_id);
 		}
 		
-		count++;
-		List<PingData> pingData = pingDataDao.findDataById(count-1);
 		return pingData;
 	}
 
 	@RequestMapping(value={"getPings"}, method = RequestMethod.GET)
-	public @ResponseBody List<Integer> getPings () {
-		List<Integer> pings = pingDataDao.getAllPings();
+	public @ResponseBody List<String> getPings () {
+		List<String> pings = pingDataDao.getAllPings();
 
 		return pings;
 	}
 
 	@RequestMapping(value={"getPingData/{ping_id}"}, method = RequestMethod.GET)
-	public @ResponseBody List<PingData> getPingData(@PathVariable int ping_id) {
+	public @ResponseBody List<PingData> getPingData(@PathVariable String ping_id) {
 		List<PingData> pingData = pingDataDao.findDataById(ping_id);
 		return pingData;
 	}
