@@ -43,14 +43,14 @@ public class PerformAnalysisController {
 			@PathVariable int packetSize,
 			@PathVariable int interval) {
 		
-		PingWrapper pw = new PingWrapper(address, echoRequests, packetSize, (double)interval / 1000);
+		PingWrapper pw = new PingWrapper(address, echoRequests, packetSize, (double)interval / 1000000);
 		pw.execute();
 		
 		List<PingData> pingData = new ArrayList<PingData>();
 		if (pingDataDao.findDataById(ping_id).size() == 0) {
 			List<PingWrapper.PingData> pingOutput = pw.getOutput();
 			for (PingWrapper.PingData data : pingOutput) {
-				pingDataDao.addData(new PingData(ping_id, data.getIcmpSeq(), data.getRtt()));
+				pingDataDao.addData(new PingData(ping_id,address,packetSize,interval, data.getIcmpSeq(), data.getRtt(), null));
 			}
 			
 			pingData = pingDataDao.findDataById(ping_id);

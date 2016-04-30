@@ -54,6 +54,7 @@
 		<beans:property name="annotatedClasses">
 			<beans:list>
 				<beans:value>com.ashish_jindal.traceroute_bandwidth.model.PingData</beans:value>
+				<beans:value>com.ashish_jindal.traceroute_bandwidth.model.TraceRoute</beans:value>
 			</beans:list>
 		</beans:property>
 		<beans:property name="hibernateProperties">
@@ -74,6 +75,10 @@
 	</beans:bean>
 	
 	<beans:bean id="pingDataDao" class="com.ashish_jindal.traceroute_bandwidth.dao.PingDataDaoImpl">
+		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</beans:bean>
+	
+	<beans:bean id="tracerouteDao" class="com.ashish_jindal.traceroute_bandwidth.dao.TracerouteDaoImpl">
 		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</beans:bean>
 </beans:beans>
