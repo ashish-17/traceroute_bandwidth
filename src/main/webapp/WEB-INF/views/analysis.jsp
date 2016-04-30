@@ -1,130 +1,147 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<!doctype html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Bandwidth analysis</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, maximum-scale=1">
+<title>Bandwidth Analysis</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<link href="css/linecons.css" rel="stylesheet" type="text/css">
+<link href="css/font-awesome.css" rel="stylesheet" type="text/css">
+<link href="css/responsive.css" rel="stylesheet" type="text/css">
+<link href="css/animate.css" rel="stylesheet" type="text/css">
+
+<link
+	href='http://fonts.googleapis.com/css?family=Lato:400,900,700,700italic,400italic,300italic,300,100italic,100,900italic'
+	rel='stylesheet' type='text/css'>
+<link
+	href='http://fonts.googleapis.com/css?family=Dosis:400,500,700,800,600,300,200'
+	rel='stylesheet' type='text/css'>
+
+<!--[if IE]><style type="text/css">.pie {behavior:url(PIE.htc);}</style><![endif]-->
+
+<script type="text/javascript" src="js/jquery.1.8.3.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/jquery-scrolltofixed.js"></script>
+<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="js/jquery.isotope.js"></script>
+<script type="text/javascript" src="js/wow.js"></script>
+<script type="text/javascript" src="js/classie.js"></script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script type="text/javascript">	
-	function init() {
-		$.ajax({
-			url : "analysis/getPings",
-		}).done(
-				function(data) {
-					for (var i = 0; i < data.length; ++i) {
-						$("#pings ul").append('<li><a class="drawLink" href="analysis/getPingData/' + data[i] + '">' + data[i] +'</a></li>');
-					}
-					
-					bind();
-				});
-	};
+<script type="text/javascript" src="js/script.js"></script>
 
-	function bind() {
-		$('.drawLink').click(function(event) {
-			event.preventDefault();
-			draw($(this).attr('href'));
+<!--[if lt IE 9]>
+    <script src="js/respond-1.1.0.min.js"></script>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/html5element.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+	$(document).ready(function(e) {
+		$('.res-nav_click').click(function() {
+			$('ul.toggle').slideToggle(600)
 		});
-	}
 
-	function draw(url) {
-		$.get(url, function(data) {
-			if (console && console.log) {
-				console.log(data);
-			}
-
-			var xData = [];
-			var yData = [];
-			var xyData = [];
-			for (var i = 0; i < data.length; ++i) {
-				xData.push(data[i].icmpSeq);
-				yData.push(data[i].rtt);
-				if (i < data.length - 1) {
-					var vals = [];
-					vals.push(data[i].rtt);
-					vals.push(data[i + 1].rtt);
-					xyData.push(vals);
+		$(document).ready(function() {
+			$(window).bind('scroll', function() {
+				if ($(window).scrollTop() > 0) {
+					$('#header_outer').addClass('fixed');
+				} else {
+					$('#header_outer').removeClass('fixed');
 				}
-			}
-
-			$('#phase-plot').highcharts({
-
-				rangeSelector : {
-					selected : 2
-				},
-
-				title : {
-					text : 'Phase Plot'
-				},
-				yAxis : {
-					title : {
-						text : 'RTT (n+1)'
-					},
-				},
-
-				series : [ {
-					name : 'RTT',
-					data : xyData,
-					lineWidth : 0,
-					marker : {
-						enabled : true,
-						radius : 2
-					},
-					tooltip : {
-						valueDecimals : 2
-					}
-				} ]
 			});
 
-			$('#line-chart').highcharts({
-				title : {
-					text : 'Packet Sequence number',
-					x : -20
-				//center
-				},
-				subtitle : {
-					text : 'Round trip time',
-					x : -20
-				},
-				xAxis : {
-					categories : xData
-				},
-				yAxis : {
-					title : {
-						text : 'Round trip time'
-					},
-					plotLines : [ {
-						value : 0,
-						width : 1,
-						color : '#808080'
-					} ]
-				},
-				tooltip : {
-					valueSuffix : 'ms'
-				},
-				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 0
-				},
-				series : [ {
-					name : 'google.com',
-					data : yData
-				} ]
-			});
 		});
+
+		$(".loaderImage").hide();
+	});
+	function resizeText() {
+		var preferredWidth = 767;
+		var displayWidth = window.innerWidth;
+		var percentage = displayWidth / preferredWidth;
+		var fontsizetitle = 25;
+		var newFontSizeTitle = Math.floor(fontsizetitle * percentage);
+		$(".divclass").css("font-size", newFontSizeTitle)
 	}
+
 	init();
 </script>
 </head>
 <body>
-	<div id="pings">
-		<ul></ul>
-	</div>
-	<div id="line-chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-	<div id="phase-plot" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+	<div class="loaderImage"></div>
+	<!--Header_section-->
+	<header id="header_outer">
+		<div class="container">
+			<div class="header_section">
+				<div class="logo">
+					<a href="<c:url value="/" />">B/W Analysis</a>
+				</div>
+				<nav class="nav" id="nav">
+					<ul class="toggle">
+						<li><a href="<c:url value="/" />">Ping</a></li>
+						<li><a href="<c:url value="/tracert" />">Traceroute</a></li>
+						<li><a href="<c:url value="/analysis" />">Analysis</a>
+						<li><a href="#">Contact Us</a>
+					</ul>
+					<ul class="">
+						<li><a href="<c:url value="/" />">Ping</a></li>
+						<li><a href="<c:url value="/tracert" />">Traceroute</a></li>
+						<li><a href="<c:url value="/analysis" />">Analysis</a>
+						<li><a href="#">Contact Us</a>
+					</ul>
+				</nav>
+				<a class="res-nav_click animated wobble wow"
+					href="javascript:void(0)"><i class="fa-bars"></i></a>
+			</div>
+		</div>
+	</header>
+	<!--Header_section-->
+
+	<!--Top_content-->
+	<section id="top_content" class="top_cont_outer">
+		<div class="top_cont_inner">
+			<div class="container">
+				<div class="top_content">
+					<div class="row">
+						<div id="keyword_search" class="wow fadeInLeft delay-05s">
+							<div id="pings" class="col-md-4">
+								<ul></ul>
+							</div>
+							<div id="tracerts" class="col-md-4">
+								<ul></ul>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="results"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--Top_content-->
+
+	<section class="twitter-feed">
+		<!--twitter-feed-->
+		<div class="container  animated fadeInDown delay-07s wow">
+			<div class="twitter_bird">
+				<span><i class="fa-twitter"></i></span>
+			</div>
+		</div>
+	</section>
+	<!--twitter-feed-end-->
+	<footer class="footer_section" id="contact">
+		<div class="container">
+			<div class="footer_bottom">
+				<span>Copyright &copy; 2015 | <a
+					href="http://ashish-jindal.com/">by B/W </a></span>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

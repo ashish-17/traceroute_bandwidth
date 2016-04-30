@@ -135,8 +135,8 @@
 							</form>
 						</div>
 					</div>
-					<div class="row analysis-chart" id="line-chart" style="min-width: 310px; height: 400px;"></div>
-					<div class="row analysis-chart" id="phase-plot" style="min-width: 310px; height: 400px;"></div>
+					<div class = "row" id="results">
+					</div>
 				</div>
 			</div>
 		</div>

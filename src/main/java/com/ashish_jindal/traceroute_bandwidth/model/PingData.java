@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,7 +18,11 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="PING")
+@Table(name="PING", indexes = {
+        @Index(columnList = "ping_id", name = "ping_id_hidx"),
+        @Index(columnList = "id", name = "id_hidx"),
+        @Index(columnList = "tracert_id", name = "tracert_hidx")
+})
 public class PingData {
 
 	@Id

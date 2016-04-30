@@ -11,8 +11,8 @@ function performPingAnalysis() {
 				url : "analysis/" + ping_id + "/" + address + "/"
 						+ echoRequests + "/" + packetSize + "/" + interval,
 			}).done(function(data) {
-		draw("analysis/getPingData/" + ping_id);
-		$('.loaderImage').hide();
+
+				draw("analysis/getPingtData/" + ping_id);
 	});
 }
 
@@ -30,7 +30,6 @@ function performTracertAnalysis() {
 						+ echoRequests + "/" + packetSize + "/" + interval,
 			}).done(function(data) {
 		draw_tr("analysis/getTracertData/" + tracert_id);
-		$('.loaderImage').hide();
 	});
 }
 
@@ -39,87 +38,17 @@ function draw(url) {
 		if (console && console.log) {
 			console.log(data);
 		}
-
-		var xData = [];
-		var yData = [];
-		var xyData = [];
-		for (var i = 0; i < data.length; ++i) {
-			xData.push(data[i].icmpSeq);
-			yData.push(data[i].rtt);
-			if (i < data.length - 1) {
-				var vals = [];
-				vals.push(data[i].rtt);
-				vals.push(data[i + 1].rtt);
-				xyData.push(vals);
-			}
-		}
-
-		$('#phase-plot').highcharts({
-
-			rangeSelector : {
-				selected : 2
-			},
-
-			title : {
-				text : 'Phase Plot'
-			},
-			yAxis : {
-				title : {
-					text : 'RTT (n+1)'
-				},
-			},
-
-			series : [ {
-				name : 'RTT',
-				data : xyData,
-				lineWidth : 0,
-				marker : {
-					enabled : true,
-					radius : 2
-				},
-				tooltip : {
-					valueDecimals : 2
-				}
-			} ]
-		});
-
-		$('#line-chart').highcharts({
-			title : {
-				text : 'ICMP Seq number vs RTT',
-				x : -20
-			//center
-			},
-			subtitle : {
-				text : 'Packet size = ' + data[0].packetSize + ' Interval = ' + data[0].inteval,
-				x : -20
-			},
-			xAxis : {
-				categories : xData
-			},
-			yAxis : {
-				title : {
-					text : 'Round trip time'
-				},
-				plotLines : [ {
-					value : 0,
-					width : 1,
-					color : '#808080'
-				} ]
-			},
-			tooltip : {
-				valueSuffix : 'ms'
-			},
-			legend : {
-				layout : 'vertical',
-				align : 'right',
-				verticalAlign : 'middle',
-				borderWidth : 0
-			},
-			series : [ {
-				name : data[0].address,
-				data : yData
-			} ]
-		});
+		
+		$('#results').empty();
+		var line_shart_div = "line_shart_"+data.ping_id;
+		var phase_plot_div = "phase_plot_"+data.ping_id;
+		var html = '<div class="row analysis-chart" id="' + line_shart_div + '" style="min-width: 310px; height: 400px;"></div>';
+		$('#results').append(html);
+		html = '<div class="row analysis-chart" id="' + phase_plot_div + '" style="min-width: 310px; height: 400px;"></div>';
+		$('#results').append(html);
+		
+		drawPlots(line_shart_div, phase_plot_div, data);
+		$('.loaderImage').hide();
 	});
 }
 
@@ -141,10 +70,14 @@ function draw_tr(url) {
 				drawPlots(line_shart_div, phase_plot_div, data[ping_id]);
 			}
 		}
+		$('.loaderImage').hide();
 	});
 }
 
 function drawPlots(line_shart_div, phase_plot_div, data) {
+	if (data.length <= 0 || !data[0].hasOwnProperty('packetSize'))
+		return;
+	
 	var xData = [];
 	var yData = [];
 	var xyData = [];
@@ -224,5 +157,50 @@ function drawPlots(line_shart_div, phase_plot_div, data) {
 			name : data[0].address,
 			data : yData
 		} ]
+	});
+}
+
+function init() {
+	$.ajax({
+		url : "analysis/getPings",
+	}).done(
+			function(data) {
+				for (var i = 0; i < data.length; ++i) {
+					$("#pings ul").append(
+							'<li><a class="drawLink" href="analysis/getPingData/' + data[i] + '">'
+									+ data[i] + '</a></li>');
+				}
+
+				bind_ping();
+			});
+	
+	$.ajax({
+		url : "analysis/getTracerts",
+	}).done(
+			function(data) {
+				for (var i = 0; i < data.length; ++i) {
+					$("#tracerts ul").append(
+							'<li><a class="drawLinkTr" href="analysis/getTracertData/' + data[i] + '">'
+									+ data[i] + '</a></li>');
+				}
+
+				bind_tr();
+			});
+};
+
+function bind_ping() {
+	$('.drawLink').click(function(event) {
+		event.preventDefault();
+		$('.loaderImage').show();
+		
+		draw($(this).attr('href'));
+	});
+}
+
+function bind_tr() {
+	$('.drawLinkTr').click(function(event) {
+		event.preventDefault();
+		$('.loaderImage').show();
+		draw_tr($(this).attr('href'));
 	});
 }

@@ -191,7 +191,7 @@
 				<version>2.1.1</version>
 				<configuration>
 					<outputDirectory>webapps</outputDirectory>
-					<warName>traceroute_bandwidth</warName>
+					<warName>bandwidth</warName>
 				</configuration>
 			</plugin>
 			<plugin>
