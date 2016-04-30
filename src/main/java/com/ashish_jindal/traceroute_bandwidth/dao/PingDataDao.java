@@ -16,5 +16,6 @@ public interface PingDataDao {
 	public void addData(PingData p);
 	public List<String> getAllPings();
 	public List<PingData> findDataById(String ping_id);
+	public List<String> fingPingsForTracert(int	pk);
 	public void removePingData(int id);
 }

@@ -31,7 +31,7 @@ public class PingData {
 	private int icmpSeq;
 	private Double rtt;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tracert_id", nullable = true)
 	private TraceRoute tracert;
 	

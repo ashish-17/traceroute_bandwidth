@@ -27,9 +27,6 @@ public class TraceRoute {
 	
 	private String tracert_id;
 	private String address;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tracert")
-	private Set<PingData> pings;
 
 	public TraceRoute() {
 		super();
@@ -82,20 +79,6 @@ public class TraceRoute {
 	 */
 	public void setTracert_id(String tracert_id) {
 		this.tracert_id = tracert_id;
-	}
-
-	/**
-	 * @return the pings
-	 */
-	public Set<PingData> getPings() {
-		return pings;
-	}
-
-	/**
-	 * @param pings the pings to set
-	 */
-	public void setPings(Set<PingData> pings) {
-		this.pings = pings;
 	}
 
 	/* (non-Javadoc)

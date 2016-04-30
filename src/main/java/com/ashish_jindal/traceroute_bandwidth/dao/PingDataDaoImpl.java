@@ -67,4 +67,11 @@ public class PingDataDaoImpl implements PingDataDao {
         pings.addAll(hs);
         return pings;
 	}
+
+	@Override
+	public List<String> fingPingsForTracert(int pk) {
+		Session session = this.sessionFactory.getCurrentSession();
+        List<String> pings = session.createQuery("SELECT ping_id FROM PingData WHERE tracert_id='" + pk + "'").list();
+        return pings;
+	}
 }

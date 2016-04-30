@@ -25,4 +25,9 @@ public class NewDataController {
     public String showIndexPage(ModelMap model) {
         return "new";
     }
+
+    @RequestMapping(value = "tracert", method = RequestMethod.GET)
+    public String showTracertPage(ModelMap model) {
+        return "tracert";
+    }
 }
