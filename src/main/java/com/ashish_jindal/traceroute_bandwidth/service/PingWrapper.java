@@ -9,11 +9,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author ashish
  *
  */
 public class PingWrapper {
+	private static final Logger logger = LoggerFactory.getLogger(PingWrapper.class);
+	 
 	private static final String EXECUTABLE = "ping";
 	
 	private String address;
@@ -130,6 +135,7 @@ public class PingWrapper {
 		try {
 			String pingCmd = EXECUTABLE + " " + address + " -c " + echoRequests + " -s " + packetSize + " -i " + interval;
 			String[] cmd = {"/bin/bash","-c", "echo ashish17| sudo -S " + pingCmd};
+			logger.info(pingCmd);
 			
 			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -144,13 +150,16 @@ public class PingWrapper {
 	
 	public void parsePingOutput(BufferedReader in) throws IOException {
 		String ping = null;
+		logger.info("****Start parsing ping o/p****");
 		while ((ping = in.readLine()) != null) {
+			logger.info(ping);
 			PingData pingData = parsePing(ping);
 			if (pingData != null) {
 				System.out.println("## - " + pingData);
 				output.add(pingData);
 			}
 		}
+		logger.info("****End parsing ping o/p****");
 	}
 	
 	public PingData parsePing(String ping) {
