@@ -12,7 +12,7 @@ function performPingAnalysis() {
 						+ echoRequests + "/" + packetSize + "/" + interval,
 			}).done(function(data) {
 
-				draw("analysis/getPingtData/" + ping_id);
+				draw("analysis/getPingData/" + ping_id);
 	});
 }
 
@@ -49,6 +49,7 @@ function draw(url) {
 		
 		drawPlots(line_shart_div, phase_plot_div, data);
 		$('.loaderImage').hide();
+		$("#intercept-calc").show();
 	});
 }
 
@@ -71,6 +72,8 @@ function draw_tr(url) {
 			}
 		}
 		$('.loaderImage').hide();
+
+		$("#intercept-calc").show();
 	});
 }
 
@@ -195,6 +198,8 @@ function bind_ping() {
 		
 		draw($(this).attr('href'));
 	});
+
+	$('#calculateBw').click(function () {calculateBw()});
 }
 
 function bind_tr() {
@@ -203,4 +208,22 @@ function bind_tr() {
 		$('.loaderImage').show();
 		draw_tr($(this).attr('href'));
 	});
+	
+	$('#calculateBw').click(function () {calculateBw()});	
+}
+
+function calculateBw() {
+	var x1 = $('#x1').val();
+	var y1 = $('#y1').val();
+	var x2 = $('#x2').val();
+	var y2 = $('#y2').val();
+	
+	var slope = (y2-y1) / (x2-x1);
+	var x = slope*x1 - y1;
+	console.log("slope = " + slope);
+	console.log("intercept = " + x);
+
+	$('#bandwidth').empty();
+	$('#bandwidth').append("Intersect x = " + x);
+	
 }

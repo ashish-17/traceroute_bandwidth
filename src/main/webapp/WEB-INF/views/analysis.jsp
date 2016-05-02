@@ -60,6 +60,7 @@
 		});
 
 		$(".loaderImage").hide();
+		$("#intercept-calc").hide();
 	});
 	function resizeText() {
 		var preferredWidth = 767;
@@ -120,6 +121,32 @@
 						</div>
 					</div>
 					<div class="row" id="results"></div>
+					<div class="row">
+						<div id="intercept-calc" class="wow fadeInLeft delay-05s">
+							<form role="form" class="col-sm-3"> 
+								<fieldset class="form-group" class="col-sm-6">
+									<label for="x1">X1</label> 
+									<input id="x1" class="form-control" type="text" placeholder="X1">
+								</fieldset>
+								<fieldset class="form-group" class="col-sm-6">
+									<label for="y1">Y1</label> 
+									<input id="y1" class="form-control" type="text" placeholder="Y1">
+								</fieldset>
+								<fieldset class="form-group" class="col-sm-6">
+									<label for="x2">X2</label> 
+									<input id="x2" class="form-control" type="text" placeholder="X2">
+								</fieldset>
+								<fieldset class="form-group" class="col-sm-6">
+									<label for="y2">Y2</label> 
+									<input id="y2" class="form-control" type="text" placeholder="Y2">
+								</fieldset>
+								
+								<button type="button" id="calculateBw" class="btn btn-default">Calculate Intercept</button>
+							</form>
+						</div>
+					</div>
+					<div class = "row" id="bandwidth">
+					</div>
 				</div>
 			</div>
 		</div>

@@ -122,6 +122,23 @@ public class PerformAnalysisController {
 		return pingData;
 	}
 
+	@RequestMapping(value={"deletePing/{ping_id}"}, method = RequestMethod.GET)
+	public @ResponseBody String deletePingData(@PathVariable String ping_id) {
+		List<PingData> pingData = pingDataDao.findDataById(ping_id);
+		for (PingData p : pingData) {
+			pingDataDao.removePingData(p.getId());
+		}
+		
+		return "success";
+	}
+
+	@RequestMapping(value={"deleteTracert/{tracert_id}"}, method = RequestMethod.GET)
+	public @ResponseBody String deleteTracertData(@PathVariable String tracert_id) {
+		tracerouteDao.removeData(tracerouteDao.findById(tracert_id).getId());
+		
+		return "success";
+	}
+
 	@RequestMapping(value={"getTracerts"}, method = RequestMethod.GET)
 	public @ResponseBody List<String> getTracerts () {
 		List<String> tracerts = tracerouteDao.getAllTraceroutes();
